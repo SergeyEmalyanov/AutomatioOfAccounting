@@ -1,4 +1,4 @@
-import java.util.Scanner;// Версия 1
+import java.util.Scanner;
 public class AutomationOfAccounting {
 
     public static void main(String[] args) {
