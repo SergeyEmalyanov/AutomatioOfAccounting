@@ -25,24 +25,60 @@ public class ReportsApp {
 
             String contents = readFileContentsOrNull(path);
             String[] lines = contents.split("\\n");
-            monthlyReports.put(months[j - 1], new MonthlyReport(lines.length));
+            int linesLength= lines.length;
+            monthlyReports.put(months[j - 1], new MonthlyReport(linesLength));
             for (int i = 0; i < lines.length; i++) {
                 String[] lineContent = lines[i].split(";");
-                monthlyReports.get(months[j - 1]).itemName[i] = lineContent[0];
-                monthlyReports.get(months[j - 1]).isExpense[i] = Boolean.parseBoolean(lineContent[1]);
-                monthlyReports.get(months[j - 1]).quantity[i] = Integer.parseInt(lineContent[2]);
-                monthlyReports.get(months[j-1]).sumOfOne[i] = Integer.parseInt(cutLastValueInString(lineContent[3], lines.length, i));
+                String itemName=lineContent[0];
+                boolean isExpense=Boolean.parseBoolean(lineContent[1]);
+                int quantity=Integer.parseInt(lineContent[2]);
+                int sumOfOne=Integer.parseInt(cutLastValueInString(lineContent[3], linesLength, i));
+                monthlyReports.get(months[j - 1]).setMonthlyReport(itemName,isExpense,quantity,sumOfOne);
             }
+
         }
     }
-
     ///////////////////////////////////////////////////////////////////////////////////////////
-    void printMonthlyReport() {
-        for (int i = 1; i <= 3; i++) {
-            monthlyReports.get(months[i-1]).printMonthlyReport();
-            //System.out.println (monthlyReports.get(months[1]).isExpense[i]);
-            //System.out.println (monthlyReports.get(months[1]).quantity[i]);
-            //System.out.println (monthlyReports.get(months[1]).sumOfOne[i]);
+    void printMonthlyReport(){
+        for(int i=0; i<3;i++){
+            monthlyReports.get(months[i]).setExAndInAndMaxOfMonth();
+            MonthlyReport printMonthlyReport=monthlyReports.get(months[i]);
+            String print;
+            for (int j=0; j<3;j++){
+                String itemName=printMonthlyReport.getItemName(j);
+                String isExpense=expenseOrIncome(printMonthlyReport.getIsExpense (j));
+                int quantity=printMonthlyReport.getQuantity (j);
+                int sumOfOne=printMonthlyReport.getSumOfOne (j);
+                int sum=quantity*sumOfOne;
+                print="Категория: "+itemName+" " +isExpense + "ы Количество: "+quantity+" Цена ед.: "+sumOfOne+" Сумма: "+sum;
+                System.out.println(print);
+            }
+            System.out.println("Всего расход: "+printMonthlyReport.getMonthlyExpenses());
+            System.out.println("Всего доход: "+printMonthlyReport.getMonthlyIncome());
+            int numberOfMaxCategory=printMonthlyReport.getCategoryOfMaxMonthlyExpenses();
+            System.out.println(stringMax(numberOfMaxCategory,i));
+            numberOfMaxCategory=printMonthlyReport.getCategoryOfMaxMonthlyIncome();
+            System.out.println(stringMax(numberOfMaxCategory,i));
+        }
+
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    String stringMax (int numberOfMaxCategory, int i){
+        MonthlyReport printMax=monthlyReports.get(months[i]);
+        String printExOrIn=expenseOrIncome(printMax.getIsExpense(numberOfMaxCategory));
+        String ItemName=printMax.getItemName(numberOfMaxCategory);
+        Integer quantity=printMax.getQuantity (numberOfMaxCategory);
+        Integer sumOfOne=printMax.getSumOfOne (numberOfMaxCategory);
+        int sum=quantity*sumOfOne;
+        return ("Наибольший "+printExOrIn+" в категории: "+ItemName+" Сумма: "+ sum);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    String expenseOrIncome (boolean expenseOrIncome ){
+        if (expenseOrIncome){
+            return ("расход");
+        }else{
+            return ("доход");
+
         }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -67,4 +103,5 @@ public class ReportsApp {
         }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
+
 }

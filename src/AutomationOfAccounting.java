@@ -7,23 +7,28 @@ public class AutomationOfAccounting {
         while (true) {
             printMenu();
             String userInput = scanner.next();
-            if (inputExceptions(userInput, 5)) {
-                if (userInput.equals("выход")) {
-                    System.out.println("6");
-                    break;
-                } else if (parseUserInput(userInput) == 1) {
+            if (userInput.equals("выход")){
+                break;
+            }
+            switch (userInput){
+                case "1":
                     reportsApp.readAndSaveMonthlyReports();
-                } else if (parseUserInput(userInput) == 2) {
+                    break;
+                case "2":
                     System.out.println("2");
-                } else if (parseUserInput(userInput) == 3) {
+                    break;
+                case "3":
                     System.out.println("3");
-                } else if (parseUserInput(userInput) == 4) {
+                    break;
+                case "4":
                     reportsApp.printMonthlyReport();
-                } else if (parseUserInput(userInput) == 5) {
+                    break;
+                case "5":
+                    //reportsApp.a();
                     System.out.println("5");
-                }
-            } else {
-                System.out.println("Нет такой команды");
+                    break;
+                default:
+                    System.out.println("Нет такой команды");
             }
         }
     }
@@ -51,4 +56,5 @@ public class AutomationOfAccounting {
         a = a || userInput.equals("выход");
         return (a);
     }
+    //////////////////////////////////////////////////////////////////////
 }
